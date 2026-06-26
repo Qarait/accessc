@@ -1,0 +1,29 @@
+version: 1
+ca:
+  name: accessc-demo-ca
+  default_ttl: 5m
+  max_ttl: 15m
+
+principals:
+  - id: user:alice
+    ssh_principals: ["alice"]
+
+resources:
+  - id: server:prod
+    host: "prod-01"
+    trusted_ca_path: "/etc/ssh/accessc_ca.pub"
+
+rules:
+  - name: allow-alice-prod
+    effect: allow
+    principal: user:alice
+    action: ssh
+    resource: server:prod
+    max_ttl: 5m
+
+  - name: deny-prod-root
+    effect: deny
+    principal: any
+    action: ssh
+    resource: server:prod
+    ssh_principal: root
